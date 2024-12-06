@@ -60,7 +60,6 @@ export default function Home() {
         (quote) => quote.category === selectedCategory
       );
 
-      // Randomly select a quote from the filtered list
       const randomQuote =
         filteredQuotes[Math.floor(Math.random() * filteredQuotes.length)];
       setRandomQuote(randomQuote);
@@ -151,7 +150,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Display the randomly selected quote here */}
         {randomQuote && (
           <div className="m-10 text-start">
             <p className="text-lg text-black-800 font-bold mb-4 font-dreamy">
