@@ -69,4 +69,5 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+  @import url("https://fonts.googleapis.com/css2?family=Reenie+Beanie&display=swap");
 }
