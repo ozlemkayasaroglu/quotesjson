@@ -34,18 +34,16 @@ const gummy = Sour_Gummy({
   weight: "400",
 });
 
-const categories = [
-  "beauty",
-  "computer",
-  "birthday",
-  "dating",
-  "equality",
-  "family",
-  "fitness",
-  "love",
-  "morning",
-  "success",
-];
+const categories = ["beauty", "birthday", "dating", "love", "New Year"];
+
+const categoryTranslations: { [key: string]: string } = {
+  beauty: "güzellik",
+  birthday: "doğum günü",
+  dating: "flört",
+  love: "aşk",
+  "New Year": "yeni yıl",
+};
+
 function textBar() {
   const [data, setData] = useState<Quote[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -53,12 +51,15 @@ function textBar() {
   const [category, setCategory] = useState<string>("love");
   const [open, setOpen] = useState(false);
   const [randomQuote, setRandomQuote] = useState<Quote | null>(null);
+  const [language, setLanguage] = useState<string>("TR");
 
   const fetchQuotes = async (selectedCategory: string): Promise<void> => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`/json/quotes.json`);
+      const fileName =
+        language === "TR" ? "/json/quotesTR.json" : "/json/quotes.json";
+      const response = await fetch(fileName);
 
       if (!response.ok) {
         throw new Error(`API request failed: ${response.status}`);
@@ -87,11 +88,28 @@ function textBar() {
 
   useEffect(() => {
     fetchQuotes(category);
-  }, [category]);
+  }, [category, language]);
+
+  const getCategoryLabel = (category: string): string => {
+    if (language === "TR") {
+      return categoryTranslations[category] || category;
+    }
+    return category;
+  };
+
+  const getCategoryTitle = (): string => {
+    const categoryText =
+      language === "TR"
+        ? `Günlük ${categoryTranslations[category] || category} dozu`
+        : `daily dose of ${category}`;
+
+    return categoryText;
+  };
+
   return (
     <div className="items-center justify-center bg-rose-300 rounded-lg text-center min-h-96 w-[450px] border-4 border-black xs:w-[300px]">
       <div className="border-b-4 border-black w-[446px] xs:w-[295px] relative">
-        <div className="justify-between flex m-5">
+        <div className="justify-between flex m-3 mt-6 mb-6">
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <div className="">
@@ -103,14 +121,16 @@ function textBar() {
                   >
                     <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
                   </svg>
-                  <p className="text-black font-bold uppercase ml-2 ">
-                    daily dose of
+                  <p className="text-black font-bold uppercase ml-2">
+                    {language === "TR" ? "Günlük" : "daily dose of"}
+                    <span className=" text-rose-800 pr-1 rounded ml-1">
+                      {categoryTranslations[category] || category}
+                    </span>
+                    {language === "TR" ? "dozu" : ""}
                   </p>
-                  <p
-                    className={`${ranchers.className}font-bold text-rose-800 uppercase ml-2`}
-                  >
-                    {category}
-                  </p>
+                  {/* <p className="font-bold text-rose-800 uppercase ml-2">
+                    {getCategoryLabel(category)}
+                  </p> */}
                 </div>
               </div>
             </PopoverTrigger>
@@ -135,7 +155,8 @@ function textBar() {
                             category === cat ? "opacity-100" : "opacity-0"
                           )}
                         />
-                        {cat}
+
+                        {getCategoryLabel(cat)}
                       </CommandItem>
                     ))}
                   </CommandGroup>
@@ -143,15 +164,7 @@ function textBar() {
               </Command>
             </PopoverContent>
           </Popover>
-          <div className="items-end justify-end flex">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 384 512"
-              className="fill-current text-black w-4 "
-            >
-              <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-            </svg>
-          </div>
+          {/* <div className="items-end justify-end flex">TR</div> */}
         </div>
       </div>
       {loading ? (
