@@ -2,8 +2,8 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Ranchers } from "next/font/google";
-import { Sour_Gummy } from "next/font/google";
+import { Ranchers, Sour_Gummy } from "next/font/google";
+import { Mountains_of_Christmas } from "next/font/google";
 
 interface Quote {
   category: string;
@@ -25,33 +25,52 @@ import {
   CommandList,
 } from "@/components/ui/command";
 
-const ranchers = Ranchers({
-  subsets: ["latin"],
-  weight: "400",
-});
+interface TextBarProps {
+  onCategoryChange: (category: string) => void;
+}
+
+interface Quote {
+  category: string;
+  quote: string;
+  author: string;
+}
+
 const gummy = Sour_Gummy({
   subsets: ["latin"],
   weight: "400",
 });
 
-const categories = ["beauty", "birthday", "dating", "love", "New Year"];
+const xmas = Mountains_of_Christmas({
+  subsets: ["latin"],
+  weight: "700",
+});
 
+const ranchers = Ranchers({
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const categories = ["New Year"];
 const categoryTranslations: { [key: string]: string } = {
-  beauty: "güzellik",
-  birthday: "doğum günü",
-  dating: "flört",
-  love: "aşk",
+  // beauty: "güzellik",
+  // birthday: "doğum günü",
+  // love: "aşk",
   "New Year": "yeni yıl",
 };
 
-function textBar() {
+function textBar({ onCategoryChange }: TextBarProps) {
   const [data, setData] = useState<Quote[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [category, setCategory] = useState<string>("love");
+  const [category, setCategory] = useState<string>("New Year");
   const [open, setOpen] = useState(false);
   const [randomQuote, setRandomQuote] = useState<Quote | null>(null);
   const [language, setLanguage] = useState<string>("TR");
+
+  const handleCategorySelect = (newCategory: string) => {
+    setCategory(newCategory);
+    onCategoryChange(newCategory);
+  };
 
   const fetchQuotes = async (selectedCategory: string): Promise<void> => {
     setLoading(true);
@@ -97,54 +116,45 @@ function textBar() {
     return category;
   };
 
-  const getCategoryTitle = (): string => {
-    const categoryText =
-      language === "TR"
-        ? `Günlük ${categoryTranslations[category] || category} dozu`
-        : `daily dose of ${category}`;
-
-    return categoryText;
-  };
-
   return (
-    <div className="items-center justify-center bg-rose-300 rounded-lg text-center min-h-96 w-[450px] border-4 border-black xs:w-[300px]">
-      <div className="border-b-4 border-black w-[446px] xs:w-[295px] relative">
-        <div className="justify-between flex m-3 mt-6 mb-6">
+    <div className="items-center justify-center bg-green-900 bg-opacity-20 rounded-lg text-center min-h-96 w-[450px]  border-4 border-gray-300 xs:w-[300px] shadow-2xl">
+      <div className="border-b-4 border-gray-300 w-[446px] xs:w-[295px] relative">
+        <div className="justify-between flex m-3 mt-6 mb-6 ">
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <div className="">
                 <div className="curser-pointer flex items-center">
-                  <svg
+                  {/* <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 512 512"
-                    className="fill-current text-black w-4 hover:text-rose-500"
+                    className="fill-current text-black w-4 hover:text-rose-500 lg:w-8"
                   >
                     <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
-                  </svg>
-                  <p className="text-black font-bold uppercase ml-2">
+                  </svg> */}
+                  <p
+                    className={`${xmas.className} text-black font-bold uppercase ml-2 sm:text-xl `}
+                  >
                     {language === "TR" ? "Günlük" : "daily dose of"}
-                    <span className=" text-rose-800 pr-1 rounded ml-1">
+                    <span
+                      className={`${xmas.className} text-rose-800 pr-1 rounded ml-1 `}
+                    >
                       {categoryTranslations[category] || category}
                     </span>
                     {language === "TR" ? "dozu" : ""}
                   </p>
-                  {/* <p className="font-bold text-rose-800 uppercase ml-2">
-                    {getCategoryLabel(category)}
-                  </p> */}
                 </div>
               </div>
             </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0">
-              <Command>
-                <CommandInput placeholder="Search category..." />
+            {/* <PopoverContent className=" w-[200px] p-0">
+              <Command className="">
                 <CommandList>
-                  <CommandEmpty>No categories found.</CommandEmpty>
-                  <CommandGroup>
+                  <CommandGroup className="">
                     {categories.map((cat) => (
                       <CommandItem
                         key={cat}
                         value={cat}
                         onSelect={() => {
+                          handleCategorySelect(cat);
                           setCategory(cat);
                           setOpen(false);
                         }}
@@ -162,9 +172,8 @@ function textBar() {
                   </CommandGroup>
                 </CommandList>
               </Command>
-            </PopoverContent>
+            </PopoverContent> */}
           </Popover>
-          {/* <div className="items-end justify-end flex">TR</div> */}
         </div>
       </div>
       {loading ? (
@@ -187,14 +196,14 @@ function textBar() {
         <div>Error: {error}</div>
       ) : (
         randomQuote && (
-          <div className="m-10 text-start xs:m-5">
+          <div className="m-10 text-start xs:m-5 ">
             <p
-              className={`${gummy.className} xs:text-lg text-2xl text-gray-800 mb-4 leading-normal `}
+              className={`${gummy.className} xs:text-xl  text-2xl text-gray-800 mb-4 leading-normal `}
             >
               {randomQuote.quote}
             </p>
             <p
-              className={`${gummy.className} text-lg uppercase text-black-950 font-bold`}
+              className={`${gummy.className} text-lg  capitalize text-black-950 font-bold`}
             >
               {randomQuote.author}
             </p>
