@@ -2,13 +2,18 @@
 import { useState } from "react";
 import QuoteBar from "@/components/QuoteBar";
 import Image from "next/image";
+import TweetButton from "@/components/TweetButton";
 
 export default function Home() {
   const [category, setCategory] = useState<string>("New Year");
+  const [currentQuote, setCurrentQuote] = useState<string>("");
 
   const handleCategoryChange = (newCategory: string) => {
-    console.log("category change to:", newCategory);
     setCategory(newCategory);
+  };
+
+  const handleQuoteChange = (quote: string) => {
+    setCurrentQuote(quote);
   };
 
   const getBackgroundImage = (selectedCategory: string): string => {
@@ -34,18 +39,23 @@ export default function Home() {
   return (
     <>
       <div
-        className="h-screen flex flex-col justify-center items-center bg-cover"
+        className="h-screen flex flex-col justify-center items-center bg-cover "
         style={{ backgroundImage: getBackgroundImage(category) }}
       >
-        <Image
-          src="/xmas_hat.webp"
-          alt="Christmas Hat"
-          width={500}
-          height={300}
-          className="absolute top-0  xs:translate-y-[58%] xs:translate-x-[-19%] "
+        <QuoteBar
+          onCategoryChange={handleCategoryChange}
+          onQouteChange={handleQuoteChange}
         />
-        <QuoteBar onCategoryChange={handleCategoryChange} />
       </div>
+      {currentQuote && (
+        <div className="mt-4">
+          <TweetButton
+            quote={currentQuote}
+            url="localhost:3000"
+            image="http://ozlem.kayasaroglu.com/wp-content/uploads/2024/12/Mutlu-Seneler.png" // Görsel URL'si
+          />
+        </div>
+      )}
     </>
   );
 }
